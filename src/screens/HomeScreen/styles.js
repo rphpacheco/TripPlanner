@@ -11,7 +11,7 @@ export default styles = StyleSheet.create({
         flex : 1,
         alignItems : 'center',
         justifyContent : 'center',
-        top : -110
+        top : -25
     },
     wrapperLogoDevPleno : {
         flexDirection : 'row',
@@ -28,5 +28,24 @@ export default styles = StyleSheet.create({
         textAlign : 'center',
         fontSize : 18,
         color : 'black'
+    },
+    pin : {
+        marginTop : 16,
+        marginBottom : 16
+    },
+    arrow : {
+        marginTop : 16
+    },
+    buttonEmptyStateBackground : { 
+        backgroundColor : 'white',
+        paddingBottom : 16,
+        paddingTop : 16,
+        alignItems : 'center'
+    },
+    buttonEmptyStateText : {
+        textAlign : 'center',
+        fontSize : 18,
+        color : 'black',
+        width : 220
     }
 })
