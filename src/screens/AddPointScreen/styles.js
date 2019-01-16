@@ -2,8 +2,7 @@ import { StyleSheet } from 'react-native'
 
 export default styles = StyleSheet.create({
     wrapper : {
-        flex : 1,
-        paddingTop : 120
+        flex : 1
     },
     header :{
         top : 26,

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import { View, Text, TextInput, TouchableOpacity, AsyncStorage } from 'react-native'
 import styles from './styles'
 
 class AddTripScreen extends Component {
@@ -8,13 +7,7 @@ class AddTripScreen extends Component {
         header : null
     }
     state = {
-        position : {
-            latitude : 37.78825,
-            longitude : -122.4324
-        },
-        pointName : '',
-        description : '',
-        price : 0
+        trip : ''
     }
     renderItem = item => {
         return (
@@ -28,6 +21,23 @@ class AddTripScreen extends Component {
                 </View>
             </View>
         )
+    }
+    handleSave = async () => {
+        const trip = {
+            id : new Date().getTime(),
+            trip : this.state.trip,
+            price : 0,
+            latitude : 0,
+            longitude : 0
+        }
+        const tripsAS = await AsyncStorage.getItem('trips')
+        let trips = []
+        if(tripsAS) {
+            trips = JSON.parse(tripsAS)
+        }
+        trips.push(trip)
+        await AsyncStorage.setItem('trips', JSON.stringify(trips))
+        this.props.navigation.navigate('AddPoint', { id : trip.id })
     }
     render () {
         const trip = {
@@ -44,37 +54,10 @@ class AddTripScreen extends Component {
         }
         return (
             <View style = { styles.wrapper }>
-                <MapView style = {{
-                    flex : 1
-                }} initialRegion = {{
-                    latitude : 37.78825,
-                    longitude : -122.4324,
-                    latitudeDelta : 0.0922,
-                    longitudeDelta : 0.0421
-                }}>
-                    <Marker 
-                        coordinate = {{
-                            latitude : 37.78825,
-                            longitude : -122.4324
-                        }}
-                        onDragEnd={
-                            (evt) => this.setState({ position : evt.nativeEvent.coordinate })
-                        }
-                        draggable
-                    />
-                </MapView>
-                
-                <View style = { styles.backButton }>
-                    <Text style = { styles.tripName }>{ trip.name }</Text>
-                    <Text style = { styles.tripPrice }>R$ 5000</Text>
-                </View>
-                <TextInput placeholder = 'Nome do ponto' onChangeText = { txt => this.setState({ pointName : txt }) } />
-                <TextInput placeholder = 'Descrição' onChangeText = { txt => this.setState({ description : txt }) } />
-                <TextInput placeholder = 'Preço' onChangeText = { txt => this.setState({ price : txt }) } />
-                <TouchableOpacity>
-                        <Text>Salvar ponto</Text>
+                <TextInput style = { styles.input } placeholder = 'Nome da viagem' onChangeText = { txt => this.setState({ trip : txt }) } />
+                <TouchableOpacity style = { styles.btn } onPress = { this.handleSave }>
+                        <Text>Salvar viagem</Text>
                 </TouchableOpacity>
-                <View style = {{ flex : 1 }}></View>
             </View>
         )
     }

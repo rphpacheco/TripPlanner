@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Image, FlatList, TouchableOpacity } from 'react-native'
+import { View, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
 import Trip from './Trip'
 import isIphoneX from '../../utils/IsIphoneX'
 import MapView from 'react-native-maps'
@@ -8,15 +8,32 @@ class TripsScreen extends Component {
     static navigationOptions = {
         header : null
     }
+    state = {
+        trips : []
+    }
     renderItem = item => {
         return <Trip onPress = { () => this.props.navigation.navigate('Trip') } title = { item.item.name } price = { item.item.price } />
     }
+    componentDidMount() {
+        this.loadData()
+    }
+    loadData = async () => {
+        const tripsAS = await AsyncStorage.getItem('trips')
+        let trips = []
+        if(tripsAS) {
+            trips = JSON.parse(tripsAS)
+        }
+        trips.forEach((trip, index) => {
+            trips[index].id = trip.id.toString()
+        })
+        this.setState({ trips : trips })
+    }
     render() {
-        console.log(isIphoneX())
-        const trips = [
+        const { trips } = this.state
+        /*[
             { id : '1', name : 'Eurotrip 2019', price : 'R$ 5000' },
             { id : '2', name : 'Expedicão ao Atacama', price : 'R$ 3000' }
-        ]
+        ]*/
         return (
             <View style = {{
                 flex : 1,
@@ -53,7 +70,7 @@ class TripsScreen extends Component {
                         renderItem = { this.renderItem }
                         horizontal
                         pagingEnabled
-                        keyExtractor = { item => item.id }
+                        keyExtractor = { item =>  item.id }
                         style = {[
                             isIphoneX() ? { marginBottom : 20 } : null
                         ]}
